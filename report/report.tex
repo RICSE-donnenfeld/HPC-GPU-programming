@@ -23,7 +23,7 @@
   captionpos=b
 }
 
-\title{PRAC4 : Matrix Multiplication}
+\title{PRAC5 : GPU Computing}
 \author{DIETZ T., JABER A., DONNENFELD T.}
 \date{\today}
 
@@ -31,8 +31,86 @@
 
 \maketitle
 
-\section{Step 1: Theoretical Analysis}
+\section{Q1}
 
-\subsection{Iterative Version: Work Partitioning}
+\subsection{A}
+
+\begin{verbatim}
+[ahpc-4@aolin-login session5]$ ./compile.sh
+main:
+     53, Loop is parallelizable
+     54, Loop is parallelizable
+     59, Loop is parallelizable
+     60, Loop is parallelizable
+     64, Loop is parallelizable
+     65, Loop is parallelizable
+\end{verbatim}
+
+\subsection{B}
+
+\begin{verbatim}
+[ahpc-4@aolin-login session5]$ perf stat LCPU
+Jacobi relaxation Calculation: 4096 x 4096 mesh, maximum of 100 iterations
+   10, 0.246094
+   20, 0.176197
+   30, 0.144464
+   40, 0.125371
+   50, 0.112275
+   60, 0.102578
+   70, 0.095025
+   80, 0.088928
+   90, 0.083871
+  100, 0.079589
+Total Iterations:   100, ERROR: 0.079589, A[32][32]= 0.006335
+
+ Performance counter stats for 'LCPU':
+
+         33.477,00 msec task-clock:u              #    1,000 CPUs utilized
+                 0      context-switches:u        #    0,000 /sec
+                 0      cpu-migrations:u          #    0,000 /sec
+               765      page-faults:u             #   22,852 /sec
+   143.869.441.866      cpu_core/cycles:u/        #    4,298 G/sec
+    18.832.022.268      cpu_core/instructions:u/  #  562,536 M/sec
+       683.453.430      cpu_core/branches:u/      #   20,416 M/sec
+         1.235.750      cpu_core/branch-misses:u/ #   36,913 K/sec
+
+      33,481076007 seconds time elapsed
+
+      33,372161000 seconds user
+       0,046337000 seconds sys
+\end{verbatim}
+
+
+\subsection{C}
+
+\begin{verbatim}
+[ahpc-4@aolin-login session5]$ ./compile_minfoall.sh
+main:
+     29, Loop not fused: dependence chain to sibling loop
+         Generated vector simd code for the loop
+     36, Loop not fused: function call before adjacent loop
+     50, Loop not vectorized/parallelized: potential early exits
+     53, Loop is parallelizable
+         Loop interchange produces reordered loop nest: 54,53
+         Generated vector simd code for the loop
+         Residual loop unrolled 6 times (completely unrolled)
+     54, Loop is parallelizable
+         Loop not fused: dependence chain to sibling loop
+     59, Loop is parallelizable
+         Loop not fused: dependence chain to sibling loop
+     60, Loop is parallelizable
+         Loop unrolled 4 times
+     64, Loop is parallelizable
+         Loop interchange produces reordered loop nest: 65,64
+         Generated vector simd code for the loop
+         Residual loop unrolled 6 times (completely unrolled)
+     65, Loop is parallelizable
+         Loop not fused: function call before adjacent loop
+\end{verbatim}
+
+\section{Q2}
+
+
+
 
 \end{document}
