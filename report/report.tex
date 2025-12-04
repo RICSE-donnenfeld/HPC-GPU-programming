@@ -5,6 +5,7 @@
 \usepackage{amsmath}
 \usepackage[margin=1.8cm]{geometry}
 \usepackage{tikz}
+\usepackage{lscape}
 
 \usetikzlibrary{arrows.meta, positioning}
 
@@ -45,6 +46,7 @@ main:
      64, Loop is parallelizable
      65, Loop is parallelizable
 \end{verbatim}
+According to this, all loops within the main loop are parallelizable (Lines 53, 54, 59, 60, 64, 65).
 
 \subsection{B}
 
@@ -80,6 +82,16 @@ Total Iterations:   100, ERROR: 0.079589, A[32][32]= 0.006335
        0,046337000 seconds sys
 \end{verbatim}
 
+\begin{landscape}
+\begin{table}[]
+\begin{tabular}{|l|l|l|l|l|l|}
+\hline
+\rowcolor[HTML]{C0C0C0} 
+Processor     & Configuration    & Elapsed Time & \#Instructions & \#Cycles & IPC  \\ \hline
+CPU - Nehalem & N=4096, Iter=100 & 33.48s       & 18.8G        & 143.8G   & 0.13 \\ \hline
+\end{tabular}
+\end{table}
+\end{landscape}
 
 \subsection{C}
 
@@ -107,10 +119,97 @@ main:
      65, Loop is parallelizable
          Loop not fused: function call before adjacent loop
 \end{verbatim}
-
+Asuming the \italic{hotspot} code section is within the main loop of the program (starting at line 50), following optimizations are applied:
+\begin{itemize}
+    \item Line 53/54: Nested loop is optimized by reordering the loops (optimizing data access), vectorizing the operations with SIMD code and performing unrolling.
+    \item Line 60: The inner loop of the second nested loop is unrolled 4 times.
+    \item Line 64/65: Similar to line 53/54, the nested loop is optimized by reordering the loops, vectorizing the operations with SIMD code and performing unrolling.
+\end{itemize}
+The other loops are parallelizable but not fused together due to data dependencies.
 \section{Q2}
 
+\begin{landscape}
+\begin{table}[]
+\begin{tabular}{|l|l|l|}
+\hline
+Device (GPU) Name                          & NVIDIA   GeForce RTX 3080                                                        & NVIDIA   GeForce RTX 3080                                                        \\ \hline
+number of SMs                              & 68                                                                               & 68                                                                               \\ \hline
+device clock rate                          & 1740   MHz                                                                       & 1740   MHz                                                                       \\ \hline
+size of the device L2 cache                & 5.242   kB                                                                       & 5.242   kB                                                                       \\ \hline
+size of the device memory                  & 10.495   MB                                                                      & 10.495   MB                                                                      \\ \hline
+Max bandwidth from device to device memory & \begin{tabular}[c]{@{}l@{}}9.501 MB x 320   bits\\    \\ = 380 GB/s\end{tabular} & \begin{tabular}[c]{@{}l@{}}9.501 MB x 320   bits\\    \\ = 380 GB/s\end{tabular} \\ \hline
+CPU target architecture                    & nehalem                                                                          & sandybridge                                                                      \\ \hline
+\end{tabular}
+\end{table}
+\end{landscape}
 
+\section{Q3}
+\subsection{A}
+With the following commands, we compile and run the code for the two different CPU architectures identified in the previous question.
+\begin{verbatim}
+nvc -fast -acc -gpu=cc80 -tp=nehalem -Minfo=all laplace.c -o LCPUnehalem
+nvc -fast -acc -gpu=cc80 -tp=sandybridge -Minfo=all laplace.c -o LCPUsandy
+sbatch -p cuda-ext.q -w aolin-gpu-3 --gres=gpu:1 -o Res3.txt runGPU.sh LCPUnehalem 100
+sbatch -p cuda-int.q -w aolin-gpu-4 --gres=gpu:1 -o Res4.txt runGPU.sh LCPUsandy 100
+\end{verbatim}
 
+\begin{verbatim}
+     53, Loop is parallelizable
+         Generating implicit copyout(Anew[1:4094][1:4094]) [if not already present]
+         Generating implicit copyin(A[:][:]) [if not already present]
+         Loop interchange produces reordered loop nest: 54,53
+         Generated vector simd code for the loop
+         Residual loop unrolled 2 times (completely unrolled)
+     54, Loop is parallelizable
+         Generating Tesla code
+         53, #pragma acc loop gang, vector(128) collapse(2) /* blockIdx.x threadIdx.x collapsed-innermost */
+         54,   /* blockIdx.x threadIdx.x auto-collapsed */
+     54, Loop not fused: no successor loop
+     59, Loop is parallelizable
+         Generating implicit copyin(A[1:4094][1:4094]) [if not already present]
+         Generating implicit copy(error) [if not already present]
+         Generating implicit copyin(Anew[1:4094][1:4094]) [if not already present]
+         Loop not fused: no successor loop
+     60, Loop is parallelizable
+         Generating Tesla code
+         59, #pragma acc loop gang, vector(128) collapse(2) /* blockIdx.x threadIdx.x collapsed-innermost */
+             Generating implicit reduction(max:error)
+         60,   /* blockIdx.x threadIdx.x auto-collapsed */
+     60, Loop unrolled 4 times
+     64, Loop is parallelizable
+         Generating implicit copyin(Anew[1:4094][1:4094]) [if not already present]
+         Generating implicit copyout(A[1:4094][1:4094]) [if not already present]
+         Loop interchange produces reordered loop nest: 65,64
+         Generated vector simd code for the loop
+         Residual loop unrolled 2 times (completely unrolled)
+     65, Loop is parallelizable
+         Generating Tesla code
+         64, #pragma acc loop gang, vector(128) collapse(2) /* blockIdx.x threadIdx.x collapsed-innermost */
+         65,   /* blockIdx.x threadIdx.x auto-collapsed */
+     65, Loop not fused: no successor loop
+\end{verbatim}
+
+We provide here only console output for the nehalem architecture as the sandybridge ouput is almost identical.
+The difference the sandybridge output has, is that the residual loops for the loops at lines 53 and 54 are unrolled 2 times in nehalem and 6 times in sandybridge.
+We observe following optimizations for the hotspot code within the main loop (starting at line 50):
+\begin{itemize}
+    \item Existing Optimizations: All previously identified optimizations (loop reordering, vectorization, unrolling) are still applied
+    \item OpenACC directives: The compiler adds OpenACC pragmas that define how the loops are parallelized on the GPU.
+    This is done for all 3 nested loops (lines 53/54, 59/60, 64/65).
+    \item Implicit Data Copies: For each nested loop, the compiler generates implicit copyin and copyout commands to manage data transfer between host and GPU device memory.
+\end{itemize}
+
+\begin{landscape}
+\begin{table}[]
+\begin{tabular}{|l|l|l|l|l|l|}
+\hline
+\rowcolor[HTML]{C0C0C0} 
+Processor     & Configuration    & Elapsed Time & \#Instructions & \#Cycles & IPC  \\ \hline
+CPU - Nehalem & N=4096, Iter=100 & 33.481s      & 18.8G          & 143.8G   & 0.13 \\ \hline
+GPU - Nehalem & N=4096, Iter=100 & 12.609s      & 27.7G          & 38.5G    & 0.72 \\ \hline
+GPU - Sandy   & N=4096, Iter=100 & 7.874s       & 21.1G          & 29.2G    & 0.72 \\ \hline
+\end{tabular}
+\end{table}
+\end{landscape}
 
 \end{document}
