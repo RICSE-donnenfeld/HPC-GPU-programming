@@ -269,5 +269,30 @@ Total Time Memory                                                               
 \end{table}
 \end{landscape}
 
+\section{Q6}
+\begin{verbatim}
+CUDA Kernel Statistics:
+
+ Time(%)  Total Time (ns)  Instances   Average   Minimum  Maximum        Name      
+ -------  ---------------  ---------  ---------  -------  -------  ----------------
+    29,0    1.968.006.058     10.000  196.800,0  195.490  198.754  main_55_gpu     
+    29,0    1.940.668.853     10.000  194.066,0  193.762  195.970  main_61_gpu     
+    29,0    1.939.356.955     10.000  193.935,0  192.706  195.458  main_66_gpu     
+    11,0      732.085.764     10.000   73.208,0   71.968   78.976  main_61_gpu__red
+
+CUDA Memory Operation Statistics (by time):
+
+ Time(%)  Total Time (ns)  Operations    Average     Minimum    Maximum       Operation     
+ -------  ---------------  ----------  -----------  ---------  ---------  ------------------
+    50,0       21.760.113      10.005      2.174,0      1.087  2.624.695  [CUDA memcpy DtoH]
+    24,0       10.778.309      10.000      1.077,0      1.024      1.856  [CUDA memset]     
+    24,0       10.772.160           4  2.693.040,0  2.684.312  2.700.344  [CUDA memcpy HtoD]
+\end{verbatim}
+
+The above GPU profiling is taken exemplary from the nehalem architecture implementation of laplace2.c.
+It acts similarly to the sandybridge code.
+The largest performance bottleneck in this setup changed from being memory transfer to kernel execution.
+More precisely, the 3 of the 4 main kernels invoked take up almost 90\% of the total kernel execution time.
+
 \end{document}
 
