@@ -189,6 +189,8 @@ sbatch -p cuda-int.q -w aolin-gpu-4 --gres=gpu:1 -o Res4.txt runGPU.sh LCPUsandy
      65, Loop not fused: no successor loop
 \end{verbatim}
 
+\subsection{B}
+
 We provide here only console output for the nehalem architecture as the sandybridge ouput is almost identical.
 The difference the sandybridge output has, is that the residual loops for the loops at lines 53 and 54 are unrolled 2 times in nehalem and 6 times in sandybridge.
 We observe following optimizations for the hotspot code within the main loop (starting at line 50):
@@ -211,5 +213,23 @@ GPU - Sandy   & N=4096, Iter=100 & 7.874s       & 21.1G          & 29.2G    & 0.
 \end{tabular}
 \end{table}
 \end{landscape}
+
+\section{Q4}
+\begin{landscape}
+\begin{table}[]
+\begin{tabular}{|l|l|l|}
+\hline
+\rowcolor[HTML]{C0C0C0} 
+                                                                                & nehalem                                                                                                      & sandybridge                                                                                                  \\ \hline
+Kernel Function names                                                           & \begin{tabular}[c]{@{}l@{}}main\_54\_gpu, main\_65\_gpu, \\ main\_60\_gpu, main\_60\_gpu\_\_red\end{tabular} & \begin{tabular}[c]{@{}l@{}}main\_54\_gpu, main\_65\_gpu, \\ main\_60\_gpu, main\_60\_gpu\_\_red\end{tabular} \\ \hline
+Total Time Kernels                                                              & 64 Mns                                                                                                       & 64 Mns                                                                                                       \\ \hline
+Memory Function   Names                                                         & \begin{tabular}[c]{@{}l@{}}memcpyHtoD,\\ memcpyDtoH,\\ memset\end{tabular}                                   & \begin{tabular}[c]{@{}l@{}}memcpyHtoD,\\ memcpyDtoH,\\ memset\end{tabular}                                   \\ \hline
+Total Time Memory                                                               & 7575,1 Mns                                                                                                   & 4180,1 Mns                                                                                                   \\ \hline
+\begin{tabular}[c]{@{}l@{}}Relative Computation \\ Time Of Kernels\end{tabular} & 0,8\%                                                                                                        & 1.5\%                                                                                                        \\ \hline
+\end{tabular}
+\end{table}
+\end{landscape}
+
+The main bottleneck we identify is the memory transfer between host and device, as most of the time is spent on the copying data from and to the GPU.
 
 \end{document}
