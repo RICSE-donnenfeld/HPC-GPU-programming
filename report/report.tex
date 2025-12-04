@@ -224,12 +224,47 @@ GPU - Sandy   & N=4096, Iter=100 & 7.874s       & 21.1G          & 29.2G    & 0.
 Kernel Function names                                                           & \begin{tabular}[c]{@{}l@{}}main\_54\_gpu, main\_65\_gpu, \\ main\_60\_gpu, main\_60\_gpu\_\_red\end{tabular} & \begin{tabular}[c]{@{}l@{}}main\_54\_gpu, main\_65\_gpu, \\ main\_60\_gpu, main\_60\_gpu\_\_red\end{tabular} \\ \hline
 Total Time Kernels                                                              & 64 Mns                                                                                                       & 64 Mns                                                                                                       \\ \hline
 Memory Function   Names                                                         & \begin{tabular}[c]{@{}l@{}}memcpyHtoD,\\ memcpyDtoH,\\ memset\end{tabular}                                   & \begin{tabular}[c]{@{}l@{}}memcpyHtoD,\\ memcpyDtoH,\\ memset\end{tabular}                                   \\ \hline
-Total Time Memory                                                               & 7575,1 Mns                                                                                                   & 4180,1 Mns                                                                                                   \\ \hline
-\begin{tabular}[c]{@{}l@{}}Relative Computation \\ Time Of Kernels\end{tabular} & 0,8\%                                                                                                        & 1.5\%                                                                                                        \\ \hline
+Total Time Memory                                                               & 7575.1 Mns                                                                                                   & 4180.1 Mns                                                                                                   \\ \hline
+\begin{tabular}[c]{@{}l@{}}Relative Computation \\ Time Of Kernels\end{tabular} & 0.84\%                                                                                                       & 1.51\%                                                                                                       \\ \hline
 \end{tabular}
 \end{table}
 \end{landscape}
 
 The main bottleneck we identify is the memory transfer between host and device, as most of the time is spent on the copying data from and to the GPU.
 
-\end{document}
+\section{Q5}
+The single difference between the 2 implementations laplace.c and laplace2.c is following code in line 50:
+\begin{lstlisting}[language=C]
+    #pragma acc data copy(A) create(Anew)
+\end{lstlisting}
+
+This results in the below exerpt from the compiler output. 
+One can see that in line 51 the compiler generates the directives to create Anew at the GPU and copy A from host to device memory.
+By providing this, the compiler avoids all implicit copy commands it added in previous implementations:
+This reduces the memory transfer overhead and thus improves performance.
+
+\begin{verbatim}
+     51, Generating create(Anew[:][:]) [if not already present]
+         Generating copy(A[:][:]) [if not already present]
+         Loop not vectorized/parallelized: potential early exits
+\end{verbatim}
+
+The performance improvements are quantified in the table below. 
+With the single CPU version taking ~33s, the first GPU version taking 12.6s/7.9s and the optimized GPU version taking only 0.5s/???(TODO)s,
+We can confirm speed ups of first ~2.6x/4.2x and then ~66x/???x respectively \bold{(always nehalem/sandybridge)},
+
+\begin{landscape}
+\begin{table}[]
+\begin{tabular}{|l|
+>{\columncolor[HTML]{EFEFEF}}l |l|
+>{\columncolor[HTML]{EFEFEF}}l |l|}
+\hline
+\cellcolor[HTML]{C0C0C0}                                                        & \cellcolor[HTML]{C0C0C0}nehalem (old) & \cellcolor[HTML]{C0C0C0}sandybridge (old) & \cellcolor[HTML]{C0C0C0}nehalem (new) & \cellcolor[HTML]{C0C0C0}sandybridge (new) \\ \hline
+Total Time Kernels                                                              & 64 Mns                                & 64 Mns                                    & 64 Mns                                & 64 Mns                                    \\ \hline
+Total Time Memory                                                               & 7575.1 Mns                            & 4180.1 Mns                                & 21 Mns                                & 12 Mns                                    \\ \hline
+\begin{tabular}[c]{@{}l@{}}Relative Computation \\ Time Of Kernels\end{tabular} & 0.84\%                                & 1.51\%                                    & 85.29\%                               & 84, 21\%                                  \\ \hline
+\begin{tabular}[c]{@{}l@{}}\#Memory Operations\\ (DtoH/HtoD)\end{tabular}       & 1600/900                              & 1600/900                                  & 105/4                                 & 105/4                                     \\ \hline
+\begin{tabular}[c]{@{}l@{}}Avg. Bytes \\ (DtoH/HtoD)\end{tabular}               & 16.4/14.5 MiB                         & 16.4/14.5 MiB                             & 0.6/16.4 MiB                          & 0.6/16.4 MiB                              \\ \hline
+\end{tabular}
+\end{table}
+\end{landscape}
