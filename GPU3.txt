@@ -1,0 +1,99 @@
+/home/master/ahpc/ahpc-4/.bashrc: línea 30: bind: aviso: no se activó la edición de línea
+GPU info for following computer node
+aolin-gpu-3.uab.cat
+
+
+CUDA Driver Version:           12020
+NVRM version:                  NVIDIA UNIX x86_64 Kernel Module  535.54.03  Tue Jun  6 22:20:39 UTC 2023
+
+Device Number:                 0
+Device Name:                   NVIDIA GeForce RTX 3080
+Device Revision Number:        8.6
+Global Memory Size:            10495524864
+Number of Multiprocessors:     68
+Concurrent Copy and Execution: Yes
+Total Constant Memory:         65536
+Total Shared Memory per Block: 49152
+Registers per Block:           65536
+Warp Size:                     32
+Maximum Threads per Block:     1024
+Maximum Block Dimensions:      1024, 1024, 64
+Maximum Grid Dimensions:       2147483647 x 65535 x 65535
+Maximum Memory Pitch:          2147483647B
+Texture Alignment:             512B
+Clock Rate:                    1740 MHz
+Execution Timeout:             Yes
+Integrated Device:             No
+Can Map Host Memory:           Yes
+Compute Mode:                  exclusive-process
+Concurrent Kernels:            Yes
+ECC Enabled:                   No
+Memory Clock Rate:             9501 MHz
+Memory Bus Width:              320 bits
+L2 Cache Size:                 5242880 bytes
+Max Threads Per SMP:           1536
+Async Engines:                 2
+Unified Addressing:            Yes
+Managed Memory:                Yes
+Concurrent Managed Memory:     Yes
+Preemption Supported:          Yes
+Cooperative Launch:            Yes
+  Multi-Device:                Yes
+Default Target:                cc80
+
+Fri Dec  5 17:30:44 2025       
++---------------------------------------------------------------------------------------+
+| NVIDIA-SMI 535.54.03              Driver Version: 535.54.03    CUDA Version: 12.2     |
+|-----------------------------------------+----------------------+----------------------+
+| GPU  Name                 Persistence-M | Bus-Id        Disp.A | Volatile Uncorr. ECC |
+| Fan  Temp   Perf          Pwr:Usage/Cap |         Memory-Usage | GPU-Util  Compute M. |
+|                                         |                      |               MIG M. |
+|=========================================+======================+======================|
+|   0  NVIDIA GeForce RTX 3080        On  | 00000000:02:00.0 Off |                  N/A |
+|  0%   54C    P8              32W / 320W |     22MiB / 10240MiB |      0%   E. Process |
+|                                         |                      |                  N/A |
++-----------------------------------------+----------------------+----------------------+
+                                                                                         
++---------------------------------------------------------------------------------------+
+| Processes:                                                                            |
+|  GPU   GI   CI        PID   Type   Process name                            GPU Memory |
+|        ID   ID                                                             Usage      |
+|=======================================================================================|
+|    0   N/A  N/A      1956      G   /usr/libexec/Xorg                             9MiB |
+|    0   N/A  N/A      2180      G   /usr/bin/gnome-shell                          4MiB |
++---------------------------------------------------------------------------------------+
+
+
+CPU info for the computer node
+
+
+nvc 21.2-0 LLVM 64-bit target on x86-64 Linux -tp nehalem 
+NVIDIA Compilers and Tools
+Copyright (c) 2020, NVIDIA CORPORATION.  All rights reserved.
+
+Arquitectura:                        x86_64
+modo(s) de operación de las CPUs:    32-bit, 64-bit
+Orden de los bytes:                  Little Endian
+CPU(s):                              12
+Lista de la(s) CPU(s) en línea:      0-11
+Hilo(s) de procesamiento por núcleo: 2
+Núcleo(s) por «socket»:              6
+«Socket(s)»                          1
+Modo(s) NUMA:                        1
+ID de fabricante:                    GenuineIntel
+Familia de CPU:                      6
+Modelo:                              44
+Nombre del modelo:                   Intel(R) Xeon(R) CPU           W3670  @ 3.20GHz
+Revisión:                            2
+CPU MHz:                             3192.000
+CPU MHz máx.:                        3192,0000
+CPU MHz mín.:                        1596,0000
+BogoMIPS:                            6399.81
+Virtualización:                      VT-x
+Caché L1d:                           32K
+Caché L1i:                           32K
+Caché L2:                            256K
+Caché L3:                            12288K
+CPU(s) del nodo NUMA 0:              0-11
+Indicadores:                         fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush dts acpi mmx fxsr sse sse2 ht tm pbe syscall nx pdpe1gb rdtscp lm constant_tsc arch_perfmon pebs bts rep_good nopl xtopology nonstop_tsc cpuid aperfmperf pni pclmulqdq dtes64 monitor ds_cpl vmx smx est tm2 ssse3 cx16 xtpr pdcm pcid dca sse4_1 sse4_2 popcnt aes lahf_lm epb pti ssbd ibrs ibpb stibp tpr_shadow vnmi flexpriority ept vpid dtherm arat flush_l1d
+
