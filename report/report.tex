@@ -1,19 +1,21 @@
 \documentclass[10pt]{article}
+
+\usepackage[margin=1.4cm]{geometry}
 \usepackage{graphicx}
 \usepackage{listings}
 \usepackage{xcolor}
 \usepackage{amsmath}
-\usepackage[margin=1.8cm]{geometry}
-\usepackage{tikz}
-\usepackage{lscape}
+\usepackage{array}
+\usepackage{booktabs}
+\usepackage{colortbl}
+\usepackage{setspace}
+\setstretch{0.92}
 
-\usetikzlibrary{arrows.meta, positioning}
-
-\setlength{\parskip}{0.4em}
+\setlength{\parskip}{0.25em}
 \setlength{\parindent}{0pt}
 
 \lstset{
-  basicstyle=\ttfamily\small,
+  basicstyle=\ttfamily\footnotesize,
   keywordstyle=\color{blue},
   commentstyle=\color{gray},
   stringstyle=\color{orange},
@@ -55,43 +57,17 @@ According to this, all loops within the main loop are parallelizable (Lines 53, 
 Jacobi relaxation Calculation: 4096 x 4096 mesh, maximum of 100 iterations
    10, 0.246094
    20, 0.176197
-   30, 0.144464
-   40, 0.125371
-   50, 0.112275
-   60, 0.102578
-   70, 0.095025
-   80, 0.088928
-   90, 0.083871
-  100, 0.079589
-Total Iterations:   100, ERROR: 0.079589, A[32][32]= 0.006335
-
- Performance counter stats for 'LCPU':
-
-         33.477,00 msec task-clock:u              #    1,000 CPUs utilized
-                 0      context-switches:u        #    0,000 /sec
-                 0      cpu-migrations:u          #    0,000 /sec
-               765      page-faults:u             #   22,852 /sec
-   143.869.441.866      cpu_core/cycles:u/        #    4,298 G/sec
-    18.832.022.268      cpu_core/instructions:u/  #  562,536 M/sec
-       683.453.430      cpu_core/branches:u/      #   20,416 M/sec
-         1.235.750      cpu_core/branch-misses:u/ #   36,913 K/sec
-
-      33,481076007 seconds time elapsed
-
-      33,372161000 seconds user
-       0,046337000 seconds sys
+   ...
 \end{verbatim}
 
-\begin{landscape}
-\begin{table}[]
-\begin{tabular}{|l|l|l|l|l|l|}
-\hline
-\rowcolor[HTML]{C0C0C0} 
-Processor     & Configuration    & Elapsed Time & \#Instructions & \#Cycles & IPC  \\ \hline
-CPU - Nehalem & N=4096, Iter=100 & 33.48s       & 18.8G        & 143.8G   & 0.13 \\ \hline
+\begin{table}[h!]
+\centering\small
+\begin{tabular}{lccccc}
+\rowcolor[HTML]{C0C0C0}
+Processor & Configuration & Elapsed Time & \#Instructions & \#Cycles & IPC \\ \midrule
+CPU - Nehalem & N=4096, Iter=100 & 33.48s & 18.8G & 143.8G & 0.13 \\
 \end{tabular}
 \end{table}
-\end{landscape}
 
 \subsection{C}
 
@@ -99,27 +75,9 @@ CPU - Nehalem & N=4096, Iter=100 & 33.48s       & 18.8G        & 143.8G   & 0.13
 [ahpc-4@aolin-login session5]$ ./compile_minfoall.sh
 main:
      29, Loop not fused: dependence chain to sibling loop
-         Generated vector simd code for the loop
-     36, Loop not fused: function call before adjacent loop
-     50, Loop not vectorized/parallelized: potential early exits
-     53, Loop is parallelizable
-         Loop interchange produces reordered loop nest: 54,53
-         Generated vector simd code for the loop
-         Residual loop unrolled 6 times (completely unrolled)
-     54, Loop is parallelizable
-         Loop not fused: dependence chain to sibling loop
-     59, Loop is parallelizable
-         Loop not fused: dependence chain to sibling loop
-     60, Loop is parallelizable
-         Loop unrolled 4 times
-     64, Loop is parallelizable
-         Loop interchange produces reordered loop nest: 65,64
-         Generated vector simd code for the loop
-         Residual loop unrolled 6 times (completely unrolled)
-     65, Loop is parallelizable
-         Loop not fused: function call before adjacent loop
+     ...
 \end{verbatim}
-Asuming the \italic{hotspot} code section is within the main loop of the program (starting at line 50), following optimizations are applied:
+Assuming the \textit{hotspot} code section is within the main loop of the program (starting at line 50), following optimizations are applied:
 \begin{itemize}
     \item Line 53/54: Nested loop is optimized by reordering the loops (optimizing data access), vectorizing the operations with SIMD code and performing unrolling.
     \item Line 60: The inner loop of the second nested loop is unrolled 4 times.
@@ -128,20 +86,20 @@ Asuming the \italic{hotspot} code section is within the main loop of the program
 The other loops are parallelizable but not fused together due to data dependencies.
 \section{Q2}
 
-\begin{landscape}
-\begin{table}[]
-\begin{tabular}{|l|l|l|}
+\begin{table}[h!]
+\centering\small
+\begin{tabular}{|l|c|c|}
 \hline
-Device (GPU) Name                          & NVIDIA   GeForce RTX 3080                                                        & NVIDIA   GeForce RTX 3080                                                        \\ \hline
-number of SMs                              & 68                                                                               & 68                                                                               \\ \hline
-device clock rate                          & 1740   MHz                                                                       & 1740   MHz                                                                       \\ \hline
-size of the device L2 cache                & 5.242   kB                                                                       & 5.242   kB                                                                       \\ \hline
-size of the device memory                  & 10.495   MB                                                                      & 10.495   MB                                                                      \\ \hline
-Max bandwidth from device to device memory & \begin{tabular}[c]{@{}l@{}}9.501 MB x 320   bits\\    \\ = 380 GB/s\end{tabular} & \begin{tabular}[c]{@{}l@{}}9.501 MB x 320   bits\\    \\ = 380 GB/s\end{tabular} \\ \hline
-CPU target architecture                    & nehalem                                                                          & sandybridge                                                                      \\ \hline
+\rowcolor[HTML]{C0C0C0}
+Device (GPU) Name & NVIDIA GeForce RTX 3080 & NVIDIA GeForce RTX 3080 \\ \hline
+number of SMs & 68 & 68 \\ \hline
+device clock rate & 1740 MHz & 1740 MHz \\ \hline
+size of the device L2 cache & 5.242 MB & 5.242 MB \\ \hline
+size of the device memory & 10.495 GB & 10.495 GB \\ \hline
+Max bandwidth from device to device memory & 380 GB/s & 380 GB/s \\ \hline
+CPU target architecture & nehalem & sandybridge \\ \hline
 \end{tabular}
 \end{table}
-\end{landscape}
 
 \section{Q3}
 \subsection{A}
@@ -193,42 +151,40 @@ sbatch -p cuda-int.q -w aolin-gpu-4 --gres=gpu:1 -o Res4.txt runGPU.sh LCPUsandy
 
 We provide here only console output for the nehalem architecture as the sandybridge ouput is almost identical.
 The difference the sandybridge output has, is that the residual loops for the loops at lines 53 and 54 are unrolled 2 times in nehalem and 6 times in sandybridge.
+
 We observe following optimizations for the hotspot code within the main loop (starting at line 50):
+
 \begin{itemize}
     \item Existing Optimizations: All previously identified optimizations (loop reordering, vectorization, unrolling) are still applied
     \item OpenACC directives: The compiler adds OpenACC pragmas that define how the loops are parallelized on the GPU.
-    This is done for all 3 nested loops (lines 53/54, 59/60, 64/65).
     \item Implicit Data Copies: For each nested loop, the compiler generates implicit copyin and copyout commands to manage data transfer between host and GPU device memory.
 \end{itemize}
 
-\begin{landscape}
-\begin{table}[]
-\begin{tabular}{|l|l|l|l|l|l|}
-\hline
-\rowcolor[HTML]{C0C0C0} 
-Processor     & Configuration    & Elapsed Time & \#Instructions & \#Cycles & IPC  \\ \hline
-CPU - Nehalem & N=4096, Iter=100 & 33.481s      & 18.8G          & 143.8G   & 0.13 \\ \hline
-GPU - Nehalem & N=4096, Iter=100 & 12.609s      & 27.7G          & 38.5G    & 0.72 \\ \hline
-GPU - Sandy   & N=4096, Iter=100 & 7.874s       & 21.1G          & 29.2G    & 0.72 \\ \hline
+\begin{table}[h!]
+\centering\small
+\begin{tabular}{lccccc}
+\rowcolor[HTML]{C0C0C0}
+Processor & Configuration & Elapsed Time & \#Instructions & \#Cycles & IPC \\ \midrule
+CPU - Nehalem & N=4096, Iter=100 & 33.481s & 18.8G & 143.8G & 0.13 \\
+GPU - Nehalem & N=4096, Iter=100 & 12.609s & 27.7G & 38.5G & 0.72 \\
+GPU - Sandy   & N=4096, Iter=100 & 7.874s & 21.1G & 29.2G & 0.72 \\
 \end{tabular}
 \end{table}
-\end{landscape}
 
 \section{Q4}
-\begin{landscape}
-\begin{table}[]
-\begin{tabular}{|l|l|l|}
+\begin{table}[h!]
+\centering\small
+\begin{tabular}{|l|c|c|}
 \hline
-\rowcolor[HTML]{C0C0C0} 
-                                                                                & nehalem                                                                                                      & sandybridge                                                                                                  \\ \hline
-Kernel Function names                                                           & \begin{tabular}[c]{@{}l@{}}main\_54\_gpu, main\_65\_gpu, \\ main\_60\_gpu, main\_60\_gpu\_\_red\end{tabular} & \begin{tabular}[c]{@{}l@{}}main\_54\_gpu, main\_65\_gpu, \\ main\_60\_gpu, main\_60\_gpu\_\_red\end{tabular} \\ \hline
-Total Time Kernels                                                              & 64 Mns                                                                                                       & 64 Mns                                                                                                       \\ \hline
-Memory Function   Names                                                         & \begin{tabular}[c]{@{}l@{}}memcpyHtoD,\\ memcpyDtoH,\\ memset\end{tabular}                                   & \begin{tabular}[c]{@{}l@{}}memcpyHtoD,\\ memcpyDtoH,\\ memset\end{tabular}                                   \\ \hline
-Total Time Memory                                                               & 7575.1 Mns                                                                                                   & 4180.1 Mns                                                                                                   \\ \hline
-\begin{tabular}[c]{@{}l@{}}Relative Computation \\ Time Of Kernels\end{tabular} & 0.84\%                                                                                                       & 1.51\%                                                                                                       \\ \hline
+\rowcolor[HTML]{C0C0C0}
+ & nehalem & sandybridge \\ \hline
+Kernel Function names & \begin{tabular}[c]{@{}l@{}}main\_54\_gpu, main\_65\_gpu,\\ main\_60\_gpu, main\_60\_gpu\_\_red\end{tabular} & same \\ \hline
+Total Time Kernels & 64 Mns & 64 Mns \\ \hline
+Memory Function Names & memcpyHtoD, memcpyDtoH, memset & same \\ \hline
+Total Time Memory & 7575.1 Mns & 4180.1 Mns \\ \hline
+Relative Computation Time & 0.84\% & 1.51\% \\ \hline
 \end{tabular}
 \end{table}
-\end{landscape}
 
 The main bottleneck we identify is the memory transfer between host and device, as most of the time is spent on the copying data from and to the GPU.
 
@@ -251,23 +207,22 @@ This reduces the memory transfer overhead and thus improves performance.
 
 The performance improvements are quantified in the table below. 
 With the single CPU version taking ~33s, the first GPU version taking 12.6s/7.9s and the optimized GPU version taking only 0.5s/???(TODO)s,
-We can confirm speed ups of first ~2.6x/4.2x and then ~66x/???x respectively \bold{(always nehalem/sandybridge)},
+We can confirm speed ups of first ~2.6x/4.2x and then ~66x/???x respectively \textbf{(always nehalem/sandybridge)}.
 
-\begin{landscape}
-\begin{table}[]
+\begin{table}[h!]
+\centering\small
 \begin{tabular}{|l|
->{\columncolor[HTML]{EFEFEF}}l |l|
->{\columncolor[HTML]{EFEFEF}}l |l|}
+>{\columncolor[HTML]{EFEFEF}}l|l|
+>{\columncolor[HTML]{EFEFEF}}l|l|}
 \hline
-\cellcolor[HTML]{C0C0C0}                                                        & \cellcolor[HTML]{C0C0C0}nehalem (old) & \cellcolor[HTML]{C0C0C0}sandybridge (old) & \cellcolor[HTML]{C0C0C0}nehalem (new) & \cellcolor[HTML]{C0C0C0}sandybridge (new) \\ \hline
-Total Time Kernels                                                              & 64 Mns                                & 64 Mns                                    & 64 Mns                                & 64 Mns                                    \\ \hline
-Total Time Memory                                                               & 7575.1 Mns                            & 4180.1 Mns                                & 21 Mns                                & 12 Mns                                    \\ \hline
-\begin{tabular}[c]{@{}l@{}}Relative Computation \\ Time Of Kernels\end{tabular} & 0.84\%                                & 1.51\%                                    & 85.29\%                               & 84, 21\%                                  \\ \hline
-\begin{tabular}[c]{@{}l@{}}\#Memory Operations\\ (DtoH/HtoD)\end{tabular}       & 1600/900                              & 1600/900                                  & 105/4                                 & 105/4                                     \\ \hline
-\begin{tabular}[c]{@{}l@{}}Avg. Bytes \\ (DtoH/HtoD)\end{tabular}               & 16.4/14.5 MiB                         & 16.4/14.5 MiB                             & 0.6/16.4 MiB                          & 0.6/16.4 MiB                              \\ \hline
+\cellcolor[HTML]{C0C0C0} & nehalem (old) & sandybridge (old) & nehalem (new) & sandybridge (new) \\ \hline
+Total Time Kernels & 64 Mns & 64 Mns & 64 Mns & 64 Mns \\ \hline
+Total Time Memory & 7575.1 Mns & 4180.1 Mns & 21 Mns & 12 Mns \\ \hline
+Relative Computation Time & 0.84\% & 1.51\% & 85.29\% & 84.21\% \\ \hline
+\#Memory Ops (DtoH/HtoD) & 1600/900 & 1600/900 & 105/4 & 105/4 \\ \hline
+Avg Bytes (DtoH/HtoD) & 16.4/14.5 MiB & 16.4/14.5 MiB & 0.6/16.4 MiB & 0.6/16.4 MiB \\ \hline
 \end{tabular}
 \end{table}
-\end{landscape}
 
 \section{Q6}
 \begin{verbatim}
@@ -285,7 +240,7 @@ CUDA Memory Operation Statistics (by time):
  Time(%)  Total Time (ns)  Operations    Average     Minimum    Maximum       Operation     
  -------  ---------------  ----------  -----------  ---------  ---------  ------------------
     50,0       21.760.113      10.005      2.174,0      1.087  2.624.695  [CUDA memcpy DtoH]
-    24,0       10.778.309      10.000      1.077,0      1.024      1.856  [CUDA memset]     
+    24,0       10.778.309      10.000      1.077,0      1.024      1.856  [CUDA memset]
     24,0       10.772.160           4  2.693.040,0  2.684.312  2.700.344  [CUDA memcpy HtoD]
 \end{verbatim}
 
