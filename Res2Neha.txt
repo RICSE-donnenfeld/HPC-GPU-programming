@@ -1,0 +1,26 @@
+/home/master/ahpc/ahpc-4/.bashrc: línea 30: bind: aviso: no se activó la edición de línea
+Run on computer:
+aolin-gpu-3.uab.cat
+
+L2GPUNeha: Instrucción ilegal
+
+ Performance counter stats for 'L2GPUNeha':
+
+              2,85 msec task-clock:u              #    0,016 CPUs utilized          
+                 0      context-switches:u        #    0,000 /sec                   
+                 0      cpu-migrations:u          #    0,000 /sec                   
+               191      page-faults:u             #   66,995 K/sec                  
+         4.505.961      cycles:u                  #    1,581 GHz                      (65,34%)
+         7.453.866      stalled-cycles-frontend:u #  165,42% frontend cycles idle     (65,39%)
+         4.974.623      stalled-cycles-backend:u  #  110,40% backend cycles idle      (82,60%)
+         5.777.727      instructions:u            #    1,28  insn per cycle         
+                                                  #    1,29  stalled cycles per insn  (96,81%)
+           996.691      branches:u                #  349,597 M/sec                  
+            27.829      branch-misses:u           #    2,79% of all branches          (86,68%)
+
+       0,178023453 seconds time elapsed
+
+       0,001447000 seconds user
+       0,002109000 seconds sys
+
+

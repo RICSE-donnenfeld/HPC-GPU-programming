@@ -1,0 +1,36 @@
+/home/master/ahpc/ahpc-4/.bashrc: línea 30: bind: aviso: no se activó la edición de línea
+Run on computer:
+aolin-gpu-4.uab.cat
+
+Jacobi relaxation Calculation: 4096 x 4096 mesh, maximum of 100 iterations
+   10, 0.246094
+   20, 0.176197
+   30, 0.144464
+   40, 0.125371
+   50, 0.112275
+   60, 0.102578
+   70, 0.095025
+   80, 0.088928
+   90, 0.083871
+  100, 0.079589
+Total Iterations:   100, ERROR: 0.079589, A[32][32]= 0.006335
+
+ Performance counter stats for 'L2GPUSandy':
+
+            410,60 msec task-clock:u              #    0,946 CPUs utilized          
+                 0      context-switches:u        #    0,000 /sec                   
+                 0      cpu-migrations:u          #    0,000 /sec                   
+             3.370      page-faults:u             #    8,207 K/sec                  
+       421.762.174      cycles:u                  #    1,027 GHz                    
+     1.375.930.110      stalled-cycles-frontend:u #  326,23% frontend cycles idle   
+       766.651.525      instructions:u            #    1,82  insn per cycle         
+                                                  #    1,79  stalled cycles per insn
+       149.658.958      branches:u                #  364,487 M/sec                  
+           173.899      branch-misses:u           #    0,12% of all branches        
+
+       0,433965104 seconds time elapsed
+
+       0,113799000 seconds user
+       0,296613000 seconds sys
+
+
